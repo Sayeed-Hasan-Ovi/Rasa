@@ -1,0 +1,6 @@
+[
+  {
+    "name": "electricity_office",
+    "pattern": "(\\badabor\\b|\\bazimpur\\b|\\bbanglabazar\\b|\\bbangshal\\b|\\bbashabo\\b|\\bbonoshree\\b|\\bdemra\\b|\\bdhanmondi\\b|\\bfateullah\\b|\\bjigatola\\b|\\bjurain\\b|\\bkakrail\\b|\\bkamrangirchar\\b|\\bkazla\\b|\\bkhilgaon\\b|\\blalbag\\b|\\bmaniknagar\\b|\\bmatuail\\b|\\bmoghbazar\\b|\\bmotijheel\\b|\\bmugdapara\\b|\\bnarayanganj\\ east\\b|\\bnarayanganj\\ west\\b|\\bnarinda\\b|\\bparibag\\b|\\bpostogola\\b|\\brajarbag\\b|\\bramna\\b|\\bsatmasjid\\b|\\bsherebanglanagar\\b|\\bshyamoli\\b|\\bshyampur\\b|\\bshytalakha\\b|\\bsiddirgonj\\b|\\bswamibag\\b|\\btejgaon\\b)"
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "rule_only_slots": [],
+  "rule_only_loops": [
+    "token_issue_form",
+    "bill_due_form",
+    "no_electricity_form",
+    "new_meter_form",
+    "file_complaint_form"
+  ]
+}

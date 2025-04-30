@@ -1,0 +1,168 @@
+version: '3.1'
+
+intents:
+- affirm
+- bill_due
+- connection_cost
+- deny
+- documents_needed
+- inform_address
+- inform_bill_number
+- inform_customer_number
+- inform_phone_number
+- inform_tracking_number
+- inform_electricity_office
+- extra_bill
+- need_meter
+- nlu_fallback
+- no_electricity
+- stop_conversation
+- token_issue
+
+entities:
+- customer_address
+- electricity_office
+- phone_number
+- customer_number
+- bill_number
+- tracking_number
+
+slots:
+  customer_number:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: customer_number
+      conditions:
+      - requested_slot: customer_number
+  
+  tracking_number:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: tracking_number
+      conditions:
+      - requested_slot: tracking_number
+  
+  phone_number:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: phone_number
+      conditions:
+      - requested_slot: phone_number
+
+  customer_address:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: customer_address
+      conditions:
+      - requested_slot: customer_address
+      
+  electricity_office:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: electricity_office
+      conditions:
+      - requested_slot: electricity_office
+
+  bill_number:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: bill_number
+      conditions:
+      - active_loop: bill_due_form
+      - requested_slot: bill_number
+
+  last_loop:
+    type: text
+    mappings:
+    - type: custom
+
+  tracking_number_retry:
+    type: float
+    initial_value: 0
+    influence_conversation: false
+    mappings:
+      - type: custom
+
+forms:
+  no_electricity_form:
+    required_slots:
+    - customer_number
+    - phone_number
+  file_complaint_form:
+    required_slots:
+    - phone_number
+    - customer_address
+    - electricity_office
+  new_meter_form:
+    required_slots:
+    - tracking_number
+  bill_due_form:
+    required_slots:
+    - bill_number
+  token_issue_form:
+    required_slots:
+    - customer_number
+
+responses:
+  utter_is_customer_number_known:
+  - text: Do you know your customer number?
+  utter_ask_customer_number:
+  - text: Please enter your customer number
+  utter_ask_phone_number:
+  - text: Please enter your phone number
+  utter_ask_customer_address:
+  - text: Please provide your address
+  utter_ask_electricity_office:
+  - text: Please choose electricity office
+  utter_goodbye:
+  - text: Bye
+  utter_confirm_complaint:
+  - text: We sincerely apologize, Currently there are no scheduled maintenance or interceptions in your area.<br> Would you like to file a complaint?
+  utter_meter_sufficient_balance:
+  - text: Please check if your meter has sufficient balance.
+  utter_oos:
+  - text: I am sorry, I dont understand.
+  utter_thankyou_message:
+  - text: Thank you for using Smart Customer Assistance Chatbot ”NILA”, Please contact our helpline (16116) for any additional queries
+  utter_ask_for_complaint:
+  - text: Would you like to file a complaint?
+  utter_need_help:
+  - text: Can I assist you with any other queries?
+  utter_applied_online:
+  - text: Have you applied online?
+  utter_ask_tracking_number:
+  - text: Please provide your online application tracking number.
+  utter_application_link:
+  - text: Click on the <a href='https://onlineapplication.dpdc.org.bd/home.php'>application link</a> to apply online
+  utter_extra_bill:
+  - text: We sincerely apologize, We regret to inform you that we're currently unable to address your query. Our chatbot is still undergoing training.<br><br> Please contact our helpline (16116).
+  utter_required_documents:
+  - text: To know about the necessary documents for a new meter, <a href='https://dpdc.org.bd/site/nocs/citizen_charter/-'>click here</a>
+  utter_connection_query:
+  - text: To know about the demand fee for a new connection, <a href='https://dpdc.org.bd/site/nocs/citizen_charter/-' target='_blank'>click here</a>
+  utter_ask_bill_number:
+  - text: Please provide your bill number.
+  utter_incorrect_bill_number:
+  - text: Bill number is incorrect. Would you like to try again?
+  utter_retry_customer_number:
+  - text: Would you like to continue with this customer number no
+  utter_retry_phone_number:
+  - text: Would you like to continue with this phone number no
+
+actions:
+- action_handle_incorrect_intent
+- action_reset_slots
+- action_handle_affirm_deny
+- action_stop_current_conversation
+- action_pre_loop_steps
+- action_loop_completion
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true

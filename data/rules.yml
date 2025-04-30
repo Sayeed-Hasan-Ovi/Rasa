@@ -1,0 +1,131 @@
+version: "3.1"
+
+rules:
+# DEFAULT RULES
+- rule: Handle informs
+  steps:
+  - or:
+    - intent: nlu_fallback
+    - intent: inform_customer_number
+    - intent: inform_phone_number
+    - intent: inform_bill_number
+    - intent: inform_tracking_number
+    - intent: inform_address
+    - intent: inform_electricity_office # try to remove this and see cause this is a lookup table and shouldn't trigger a wrong intent
+  - action: action_handle_incorrect_intent
+
+- rule: Handle next action when user's intent is no electrcitiy
+  steps:
+  - intent: no_electricity
+  - action: action_deactivate_loop
+  - action: action_pre_loop_steps
+  - action: action_listen
+  - action: utter_is_customer_number_known
+
+- rule: Handle next action when user's intent is token issue
+  steps:
+  - intent: token_issue
+  - action: action_deactivate_loop
+  - action: action_pre_loop_steps
+
+- rule: Handle bill due intent
+  steps:
+  - intent: bill_due
+  - action: action_deactivate_loop
+  - action: action_pre_loop_steps
+
+- rule: Handle meter intent
+  steps:
+  - intent: need_meter
+  - action: action_deactivate_loop
+  - action: action_pre_loop_steps
+
+- rule: Handle affirm or deny intents
+  steps:
+  - or:
+    - intent: affirm
+    - intent: deny
+  - action: action_handle_affirm_deny
+
+- rule: Stop any conversation
+  steps:
+  - intent: stop_conversation
+  - action: action_stop_current_conversation
+  - action: action_reset_slots
+
+# SHORT FLOWS
+- rule: User asks what documents are required
+  steps:
+  - intent: documents_needed
+  - action: action_deactivate_loop
+  - action: utter_required_documents
+
+- rule: User asks how much a new connection will cost
+  steps:
+  - intent: connection_cost
+  - action: action_deactivate_loop
+  - action: utter_connection_query
+
+- rule: User says they have extra bill
+  steps:
+  - intent: extra_bill
+  - action: action_deactivate_loop
+  - action: utter_extra_bill
+
+# FORM SUBMITIONS
+- rule: Submit no electricity form
+  condition:
+  - active_loop: no_electricity_form
+  steps:
+  - action: no_electricity_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_loop_completion
+
+- rule: Submit complaint filing form
+  condition:
+  - active_loop: file_complaint_form
+  steps:
+  - action: file_complaint_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_loop_completion
+
+- rule: Submit token issue form
+  condition:
+  - active_loop: token_issue_form
+  steps:
+  - action: token_issue_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_loop_completion
+
+- rule: Submit bill due form
+  condition:
+  - active_loop: bill_due_form
+  steps:
+  - action: bill_due_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_loop_completion
+
+- rule: Submit new meter form
+  condition:
+  - active_loop: new_meter_form
+  steps:
+  - action: new_meter_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_loop_completion
+
+- rule: Run ActionLoopCompletion after retry limit
+  condition:
+  - slot_was_set:
+      - tracking_number_retry: 3
+  steps:
+  - action: action_loop_completion

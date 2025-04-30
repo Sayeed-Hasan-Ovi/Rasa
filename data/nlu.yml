@@ -1,0 +1,250 @@
+version: "3.1"
+nlu:
+# - regex: bill_number
+#   examples: |
+#     - \b\d{9}\b
+# - regex: customer_number
+#   examples: |
+#     - \b\d{8}\b
+# - regex: phone_number
+#   examples: |
+#     - \b\d{11}\b
+# - regex: tracking_number
+#   examples: |
+#     - \b\d{10}\b
+# - regex: customer_address
+#   examples: |
+#     - .*
+    
+- lookup: electricity_office
+  examples: |
+    - adabor
+    - azimpur
+    - banglabazar
+    - bangshal
+    - bashabo
+    - bonoshree
+    - demra
+    - dhanmondi
+    - fateullah
+    - jigatola
+    - jurain
+    - kakrail
+    - kamrangirchar
+    - kazla
+    - khilgaon
+    - lalbag
+    - maniknagar
+    - matuail
+    - moghbazar
+    - motijheel
+    - mugdapara
+    - narayanganj east
+    - narayanganj west
+    - narinda
+    - paribag
+    - postogola
+    - rajarbag
+    - ramna
+    - satmasjid
+    - sherebanglanagar
+    - shyamoli
+    - shyampur
+    - shytalakha
+    - siddirgonj
+    - swamibag
+    - tejgaon
+
+- intent: no_electricity
+  examples: |
+    - no electricity
+    - i have no electricity
+    - power outage
+    - no power
+    - বিদ্যুৎ নেই
+    - আমার বিদ্যুৎ নেই
+    - বিদ্যুৎ চলে গেছে
+
+- intent: token_issue
+  examples: |
+    - Prepaid meter is not accepting token
+    - token issue
+    - meter not accepting token
+    - মিটার টোকেন নিচ্ছে না
+    - টোকেন সমস্যা
+    - টোকেন ইস্যু
+
+- intent: need_meter
+  examples: |
+    - need a meter
+    - meter
+    - I need a meter
+    - new connection
+    - নতুন সংযোগ নিতে চাই
+    - মিটার লাগবে
+    - আমার একটি মিটার লাগবে
+    - নতুন সংযোগ
+
+- intent: inform_customer_number
+  examples: |
+    - [25222513](customer_number)
+    - My customer number is [25224732](customer_number)
+    - [22334455](customer_number)
+    - আমার কাস্টমের নাম্বার হচ্ছে [11223344](customer_number)
+    - [11223344](customer_number) হচ্ছে আমার কাস্টমের নাম্বার
+    - [২৫২২২৫১৩](customer_number)
+  
+- intent: inform_phone_number
+  examples: |
+    - [01709630416](phone_number)
+    - [০১৭০৯৬৩০৪১৬](phone_number)
+    - My phone number is [01983446750](phone_number)
+    - [01712601359](phone_number)
+    - [12345678900](phone_number)
+    - আমার ফোন নাম্বার হচ্ছে [12345678900](phone_number)
+    - [12345678900](phone_number) হচ্ছে আমার ফোন নুম্বের
+    - [11223344556](phone_number)
+    - [11223344098](phone_number)
+
+- intent: inform_address
+  examples: |
+    - [dhaka](customer_address)
+    - [Dhanmondi 15](customer_address)
+    - [Road 8, House 15, Uttara](customer_address)
+    - I live in [dhanmondi](customer_address)
+    - I am located in [uttara](customer_address)
+    - আমি [ধান্মন্দিতে](customer_address) থাকি
+    - আমার লোকেশান হচ্ছে [উত্তারা](customer_address)
+
+- intent: inform_tracking_number
+  examples: |
+    - [1240230039](tracking_number)
+    - [১২৪০১২০০৩৯](tracking_number)
+    - My tracking number is [1122334455](tracking_number)
+    - [1122334455](tracking_number) is my tracking number
+    - আমার ট্র্যাকিং নম্বর হচ্ছে [1122334455](tracking_number)
+    - [1122334455](tracking_number) আমার ট্র্যাকিং নম্বর
+
+- intent: inform_electricity_office
+  examples: |
+    - [adabor](electricity_office)
+    - [azimpur](electricity_office)
+    - [banglabazar](electricity_office)
+    - [bangshal](electricity_office)
+    - [bashabo](electricity_office)
+    - [bonoshree](electricity_office)
+    - [demra](electricity_office)
+    - [dhanmondi](electricity_office)
+    - [fateullah](electricity_office)
+    - [jigatola](electricity_office)
+    - [jurain](electricity_office)
+    - [kakrail](electricity_office)
+    - [kamrangirchar](electricity_office)
+    - [kazla](electricity_office)
+    - [khilgaon](electricity_office)
+    - [lalbag](electricity_office)
+    - [maniknagar](electricity_office)
+    - [matuail](electricity_office)
+    - [moghbazar](electricity_office)
+    - [motijheel](electricity_office)
+    - [mugdapara](electricity_office)
+    - [narayanganj east](electricity_office)
+    - [narayanganj west](electricity_office)
+    - [narinda](electricity_office)
+    - [paribag](electricity_office)
+    - [postogola](electricity_office)
+    - [rajarbag](electricity_office)
+    - [ramna](electricity_office)
+    - [satmasjid](electricity_office)
+    - [sherebanglanagar](electricity_office)
+    - [shyamoli](electricity_office)
+    - [shyampur](electricity_office)
+    - [shytalakha](electricity_office)
+    - [siddirgonj](electricity_office)
+    - [swamibag](electricity_office)
+    - [tejgaon](electricity_office)
+
+- intent: affirm
+  examples: |
+    - yes
+    - y
+    - indeed
+    - of course
+    - that sounds good
+    - correct
+    - হ্যাঁ
+    - জি হ্যাঁ
+    - সঠিক
+    - অবশ্যই
+
+- intent: deny
+  examples: |
+    - no
+    - n
+    - never
+    - I don't think so
+    - don't like that
+    - no way
+    - not really
+    - না
+    - মনে হয় না
+    - একদম না
+    - ন
+    - না ভাই
+    - আমি আর আগে বারতে চাই না
+
+- intent: stop_conversation
+  examples: |
+    - stop
+    - i want to stop
+    - i do not want to continue
+    - i dont want to continue
+    - i dont want to continue anymore
+    - বাতিল
+    - আমি আর আগে বারতে চাই না
+    - বন্ধ
+    - বন্ধ করো
+
+- intent: extra_bill
+  examples: |
+    - extra bill
+    - i have got an extra bill
+    - i have extra bill
+    - বিল বেশী আসছে
+    - বিল বেশী
+
+- intent: documents_needed
+  examples: |
+    - documents
+    - documents for new connection?
+    - What documents are required for new connection?
+    - নতুন সংযোগ নিতে কি কি কাগজ প্রয়োজন
+    - ডকুমেন্টস কি কি লাগবে?
+    - ডকুমেন্টস?
+
+- intent: connection_cost
+  examples: |
+    - How much will new connection cost?
+    - connection cost
+    - how much for new connection?
+    - নতুন সংযোগ নিতে কত টাকা লাগবে
+    - সংযোগ টাকা
+
+- intent: bill_due
+  examples: |
+    - Bill is showing due even after payment
+    - bill is due
+    - I have paid but still bill is due
+    - bill due
+    - বিল পরিশোধ করার পরেও বকেয়া দেখাচ্ছে
+    - বিল বকেয়া
+    - বিল বকেয়া কেন?
+
+- intent: inform_bill_number
+  examples: |
+    - [159997535](bill_number)
+    - [১৫৯৯৯৭৫৩৫](bill_number)
+    - My bill number is [159997535](bill_number)
+    - [159997535](bill_number) is my bill number
+    - আমার বিল নম্বর হচ্ছে [159997535](bill_number)
+    - [159997535](bill_number) আমার বিল নম্বর
