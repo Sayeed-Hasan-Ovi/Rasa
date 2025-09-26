@@ -108,6 +108,10 @@ forms:
   token_issue_form:
     required_slots:
     - customer_number
+  extra_bill_form:
+    required_slots:
+    - customer_number
+    - phone_number
 
 responses:
   utter_is_customer_number_known:
@@ -162,6 +166,7 @@ actions:
 - action_stop_current_conversation
 - action_pre_loop_steps
 - action_loop_completion
+- validate_extra_bill_form
 
 session_config:
   session_expiration_time: 60

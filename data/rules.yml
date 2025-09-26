@@ -53,6 +53,7 @@ rules:
   - action: action_stop_current_conversation
   - action: action_reset_slots
 
+
 # SHORT FLOWS
 - rule: User asks what documents are required
   steps:
@@ -66,11 +67,26 @@ rules:
   - action: action_deactivate_loop
   - action: utter_connection_query
 
-- rule: User says they have extra bill
+# EXTRA BILL FORM FLOW
+- rule: Activate extra bill form
   steps:
   - intent: extra_bill
   - action: action_deactivate_loop
-  - action: utter_extra_bill
+  - action: extra_bill_form
+  - slot_was_set:
+    - last_loop: extra_bill_form
+  - active_loop: extra_bill_form
+
+- rule: Submit extra bill form
+  condition:
+  - active_loop: extra_bill_form
+  steps:
+  - action: extra_bill_form
+  - active_loop: null
+  - slot_was_set:
+      - requested_slot: null
+      - last_loop: extra_bill_form
+  - action: action_loop_completion
 
 # FORM SUBMITIONS
 - rule: Submit no electricity form

@@ -1,3 +1,18 @@
+def register_extra_bill_complaint(sender_id, customer_number, phone_number):
+    print("Registering extra bill complaint...")
+    # Use a different complaint type for extra bill, e.g., '53'
+    complaint_type = "53"
+    # Simulate API call for extra bill complaint
+    # Replace with actual API call if available
+    payload = {
+        "_id": sender_id,
+        "customerNumber": customer_number,
+        "phoneNumber": phone_number,
+        "complaintType": complaint_type,
+        "trackingNumber": "EXTRABILL"  # You may want to generate or fetch a real one
+    }
+    # requests.post(__FLASK_BASE_URL+"/store_complaint", json=payload)
+    return "EXTRABILL"
 # This files contains your custom actions which can be used to run
 # custom Python code.
 #
@@ -104,6 +119,18 @@ def get_complaint_number(sender_id, customer_number, phone_number, customer_addr
     else:
         return dummy_number
 
+
+class ValidateExtraBillForm(FormValidationAction):
+    def name(self) -> Text:
+        return "validate_extra_bill_form"
+
+    async def extract_other_slots(
+        self, dispatcher, tracker, domain
+    ) -> Dict[Text, Any]:
+        # This is called after all required slots are filled
+        if tracker.get_slot("customer_number") and tracker.get_slot("phone_number"):
+            return {"last_loop": "extra_bill_form"}
+        return {}
 ############################################### VALIDATIONS #############################################
 # class ValidateNoElectricityForm(FormValidationAction):
 
@@ -360,27 +387,40 @@ class ActionHandleIncorrectIntent(Action):
 
         dpdc_response = None
         if requested_slot == "customer_number":
-            dpdc_response = dpdc_api.prepaid_information(last_user_input, None)
-            print(dpdc_response)
-            if dpdc_response and dpdc_response["HAS_ERROR"] == "Y":
-                dispatcher.utter_message(json_message={
-                    "text":"The customer number you've given isn't in our records. Would you like to try again?<br><br>If you've forgotten your customer number, please reach out to our helpline at (16116)."
-                })
-                return [SlotSet(requested_slot, None)]
-            else:
-                # check to see if phone number exists. 
-                # This could happen if the user restarts the no elec form says 'no' to re using customer number,
-                # enters it but there is an existing phone number
-                if tracker.get_slot("phone_number") is not None:
-                    # a phone number exists to ask the user if they want to continue with the same phone number
+            if active_loop == "no_electricity_form":
+                dpdc_response = dpdc_api.prepaid_information(last_user_input, None)
+                print(dpdc_response)
+                if dpdc_response and dpdc_response["HAS_ERROR"] == "Y":
                     dispatcher.utter_message(json_message={
-                        "text": "Would you like to continue with this phone number {no}?",
-                        "phone_number": tracker.get_slot("phone_number")
+                        "text":"The customer number you've given isn't in our records. Would you like to try again?<br><br>If you've forgotten your customer number, please reach out to our helpline at (16116)."
                     })
-                    return [SlotSet(requested_slot, last_user_input), FollowupAction("utter_retry_phone_number")]
+                    return [SlotSet(requested_slot, None)]
+                else:
+                    if tracker.get_slot("phone_number") is not None:
+                        dispatcher.utter_message(json_message={
+                            "text": "Would you like to continue with this phone number {no}?",
+                            "phone_number": tracker.get_slot("phone_number")
+                        })
+                        return [SlotSet(requested_slot, last_user_input), FollowupAction("utter_retry_phone_number")]
+                    return [SlotSet(requested_slot, last_user_input)]
+            elif active_loop == "extra_bill_form":
+                # For extra_bill_form, just set the customer_number, do not check prepaid
                 return [SlotSet(requested_slot, last_user_input)]
-            
         elif requested_slot == "phone_number":
+            if active_loop == "extra_bill_form":
+                customer_number = tracker.get_slot("customer_number")
+                phone_number = last_user_input
+                # Call customer_information with both values
+                dpdc_response = dpdc_api.customer_information(customer_number, phone_number)
+                print("[EXTRA BILL] customer_information response:", dpdc_response)
+                # You can add validation logic here if needed
+                if dpdc_response and dpdc_response.get("HAS_ERROR") == "Y":
+                    dispatcher.utter_message(json_message={
+                        "text": "The customer/phone number combination is not valid. Please try again."
+                    })
+                    return [SlotSet(requested_slot, None)]
+                return [SlotSet(requested_slot, phone_number)]
+            # Default phone number validation for other forms
             if len(last_user_input) != 11 or last_user_input.isdigit() == False:
                 dispatcher.utter_message(json_message={"text":"The phone number is invalid. Would you like to try again?"})
                 return [SlotSet(requested_slot, None)]
@@ -647,7 +687,21 @@ class ActionLoopCompletion(Action):
                 else:
                     return [FollowupAction("utter_confirm_complaint")]
             else:
-                # dispatcher.utter_message(response="utter_thankyou_message")
+                return [FollowupAction("action_reset_slots")]
+
+        # Handle extra_bill_form separately
+        elif last_loop == "extra_bill_form":
+            customer_number = tracker.get_slot('customer_number')
+            phone_number = tracker.get_slot('phone_number')
+            print(f"[EXTRA BILL] customer number: {customer_number}, phone number: {phone_number}")
+            if customer_number is not None and phone_number is not None:
+                complaint_number = register_extra_bill_complaint(tracker.sender_id, customer_number, phone_number)
+                dispatcher.utter_message(json_message={
+                    'text': f"Dear Sir/Madam, Your Extra Bill Complaint No : {complaint_number} has been submitted successfully.",
+                    'complaint_number': complaint_number
+                })
+                return [FollowupAction("utter_need_help")]
+            else:
                 return [FollowupAction("action_reset_slots")]
         elif last_loop == "file_complaint_form":
             phone_number = tracker.get_slot("phone_number")
