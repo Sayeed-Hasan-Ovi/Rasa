@@ -28,6 +28,13 @@ entities:
 - tracking_number
 
 slots:
+  repeat_counter:
+    type: float
+    initial_value: 0
+    influence_conversation: false
+    mappings:
+    - type: custom
+
   customer_number:
     type: text
     mappings:
@@ -82,13 +89,6 @@ slots:
     mappings:
     - type: custom
 
-  tracking_number_retry:
-    type: float
-    initial_value: 0
-    influence_conversation: false
-    mappings:
-      - type: custom
-
 forms:
   no_electricity_form:
     required_slots:
@@ -105,13 +105,13 @@ forms:
   bill_due_form:
     required_slots:
     - bill_number
-  token_issue_form:
-    required_slots:
-    - customer_number
   extra_bill_form:
     required_slots:
     - customer_number
     - phone_number
+  token_issue_form:
+    required_slots:
+    - customer_number
 
 responses:
   utter_is_customer_number_known:
@@ -133,11 +133,23 @@ responses:
   utter_oos:
   - text: I am sorry, I dont understand.
   utter_thankyou_message:
-  - text: Thank you for using Smart Customer Assistance Chatbot ”NILA”, Please contact our helpline (16116) for any additional queries
+  - text: Thank you for using DPDC's Chat Support, Please contact our helpline (16116) for any additional queries
+  utter_initial_message:
+  - text: Greetings from Dhaka Power Distribution Company Limited (DPDC) Smart Customer Assistance Chatbot ”বিদ্যুৎ বন্ধু”! How may I help you today?
+  utter_happy_to_help:
+  - text:  I am doing good, Thank You! How may I help you today?
   utter_ask_for_complaint:
   - text: Would you like to file a complaint?
   utter_need_help:
   - text: Can I assist you with any other queries?
+  utter_required_time:
+  - text: If the documents are correct, LT connection will be provided within 4 days and HT connection within 15 days. For details, contact our helpline (16116).
+  utter_meter_provider:
+  - text: For prepaid meters, DPDC will provide the service, and for postpaid meters, customers need to purchase. For details, contact our helpline (16116).
+  utter_unable_to_pay:
+  - text: We sincerely apologize for the inconvenience. Please try again through MFS, Internet Banking, Online Banking, etc. Otherwise, contact our helpline (16116).
+  utter_complaint_status:
+  - text: <a href='https://dpdc.org.bd/site/home_gov/compliant_tracking'>Click here</a> to check the status of your complaint. Please provide your tracking number and visible security code after reaching that page. N.B. You might have to reload the page to see the status.
   utter_applied_online:
   - text: Have you applied online?
   utter_ask_tracking_number:
@@ -166,7 +178,6 @@ actions:
 - action_stop_current_conversation
 - action_pre_loop_steps
 - action_loop_completion
-- validate_extra_bill_form
 
 session_config:
   session_expiration_time: 60
