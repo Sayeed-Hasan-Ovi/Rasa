@@ -1,0 +1,32 @@
+version: "3.1"
+
+stories:
+- story: No electricity happy path
+  steps:
+  - intent: no_electricity
+  - action: action_deactivate_loop
+  - action: action_pre_loop_steps
+  - action: action_listen
+  - action: utter_is_customer_number_known
+  - or:
+    - intent: affirm
+    - intent: deny
+  - action: action_handle_affirm_deny
+
+# - story: User asks what documents are required
+#   steps:
+#   - intent: documents_needed
+#   - action: action_deactivate_loop
+#   - action: utter_required_documents
+
+# - story: User asks how much a new connection will cost
+#   steps:
+#   - intent: connection_cost
+#   - action: action_deactivate_loop
+#   - action: utter_connection_query
+
+# - story: User says they have extra bill
+#   steps:
+#   - intent: extra_bill
+#   - action: action_deactivate_loop
+#   - action: utter_extra_bill
